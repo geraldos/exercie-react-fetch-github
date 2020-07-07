@@ -9,6 +9,14 @@ const Div = styled.div`
   padding: 10px;
 `;
 
+const DivValue = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+`;
+
 const H1 = styled.h1`
   text-align: center;
   font-family: "Quicksand", sans-serif;
@@ -68,51 +76,49 @@ const Hr = styled.hr`
 `;
 
 function GithubUser() {
-  const [datas, setDatas] = useState({});
-  const [username, setUserName] = useState("");
+  const [name, setName] = useState("");
+  const [data, setData] = useState({});
 
-  const onSubmit = (event) => {
-    if (event.key === "Enter") {
-      setUserName(event.target.value);
-    }
-  };
-  useEffect(() => {
-    async function fetchData() {
-      const url = `https://api.github.com/users/${username}`;
-      const response = await fetch(url);
-      const result = await response.json();
-      setDatas(result);
-    }
-    fetchData();
-  }, [username]);
+  function handleChange(event) {
+    setName(event.target.value);
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const url = `https://api.github.com/users/${name}`;
+    const response = await fetch(url);
+    const result = await response.json();
+    setData(result);
+  }
 
   return (
     <div>
       <H1>Search User Github Apps</H1>
       <Div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <Div>
             <Input
               type="text"
-              name="username"
+              name="name"
               id="username"
+              value={name}
               placeholder="type username github and press enter..."
-              onKeyPress={onSubmit}
+              onChange={handleChange}
             ></Input>
           </Div>
 
           <Div>
             <Avatar>
-              <img src={datas.avatar_url} alt="avatar"></img>
+              <img src={data.avatar_url} alt="avatar"></img>
             </Avatar>
           </Div>
 
           <Div>
-            <H2>{datas.name}</H2>
+            <H2>{data.name}</H2>
           </Div>
 
           <Div>
-            <H3>{datas.bio}</H3>
+            <H3>{data.bio}</H3>
           </Div>
 
           <Hr />
@@ -120,14 +126,20 @@ function GithubUser() {
           <Div>
             <DivArticle>
               <Div>
-                <H2Sub>{datas.followers}</H2Sub>
-                <H3Sub>Followers</H3Sub>
+                <DivValue>
+                  <H3Sub>Followers</H3Sub>
+                  <H2Sub>{data.followers}</H2Sub>
+                </DivValue>
 
-                <H2Sub>{datas.public_repos}</H2Sub>
-                <H3Sub>Repository</H3Sub>
+                <DivValue>
+                  <H3Sub>Repository</H3Sub>
+                  <H2Sub>{data.public_repos}</H2Sub>
+                </DivValue>
 
-                <H2Sub>{datas.following}</H2Sub>
-                <H3Sub>Following</H3Sub>
+                <DivValue>
+                  <H3Sub>Following</H3Sub>
+                  <H2Sub>{data.following}</H2Sub>
+                </DivValue>
               </Div>
             </DivArticle>
           </Div>
